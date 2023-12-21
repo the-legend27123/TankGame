@@ -13,14 +13,20 @@ display_height = 600
 
 gameDisplay = pygame.display.set_mode((display_width, display_height))
 
-#fire_sound = pygame.mixer.Sound("1.mp3")
-#explosion_sound = pygame.mixer.Sound("1.mp3")
+pygame.mixer.init(44100,-16,2, 1024)
 
-#pygame.mixer.music.load("1.mp3")
+#initialise sounds
+hit_sound = pygame.mixer.Sound("explosion.mp3")
+intro_music = pygame.mixer.Sound("main_menu.mp3")
+shot_sound_mp3 = pygame.mixer.Sound("shot.mp3")
+win_sound = pygame.mixer.Sound("win.mp3")
+loose_sound = pygame.mixer.Sound("defeat.mp3")
+
+#pygame.mixer.music.load("explosion.mp3")
 #pygame.mixer.music.play(-1)
 
 
-pygame.display.set_caption('Tanks - Brought To You By code-projects.org')
+pygame.display.set_caption('Tanks - Brought To You By code-projects.org / Melvin Grill')
 
 icon = pygame.image.load("ic.jpg")
 pygame.display.set_icon(icon)
@@ -99,7 +105,7 @@ def tank(x, y, turPos):
                        (x - 18, y - 15),
                        (x - 15, y - 17),
                        (x - 13, y - 19),
-                       (x - 11, y - 21)
+                       (x - 11, y - 21)                       
                        ]
 
     pygame.draw.circle(gameDisplay, blue, (x, y), int(tankHeight / 2))
@@ -173,9 +179,9 @@ def game_controls():
         message_to_screen("Press D to raise Power % AND Press A to lower Power % ", wheat, 140)
         message_to_screen("Pause: P", wheat, 90)
 
-        button("Play", 150, 500, 100, 50, green, light_green, action="play")
-        button("Main", 350, 500, 100, 50, yellow, light_yellow, action="main")
-        button("Quit", 550, 500, 100, 50, red, light_red, action="quit")
+        button("Play", 550, 500, 100, 50, green, light_green, action="play")
+        button("Main", 1550, 500, 100, 50, yellow, light_yellow, action="main")
+        button("Quit", 660, 500, 100, 50, red, light_red, action="quit")
 
         pygame.display.update()
 
@@ -190,16 +196,22 @@ def button(text, x, y, width, height, inactive_color, active_color, action=None,
         pygame.draw.rect(gameDisplay, active_color, (x, y, width, height))
         if click[0] == 1 and action != None:
             if action == "quit":
+                
                 pygame.quit()
                 quit()
 
             if action == "controls":
+                pygame.mixer.Sound.stop(intro_music)
                 game_controls()
 
+
             if action == "play":
+                pygame.mixer.Sound.stop(intro_music)
+                pygame.mixer.Sound.stop(loose_sound)
                 gameLoop()
 
             if action == "main":
+                pygame.mixer.Sound.stop(intro_music)
                 game_intro()
 
     else:
@@ -235,9 +247,12 @@ def barrier(xlocation, randomHeight, barrier_width):
 
 #---------------------------function for explosion for both tanks---------------------------------------
 def explosion(x, y, size=50):
-    #pygame.mixer.Sound.play(explosion_sound)
-    explode = True
+   # pygame.mixer.Sound.play(explosion_sound)
 
+   # pygame.mixer.Sound(explosion_sound_mp3)
+
+    explode = True
+    pygame.mixer.Sound.play(hit_sound)
     while explode:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -265,10 +280,11 @@ def explosion(x, y, size=50):
 
 #--------------------------------firing function for players tank-------------------------------------------
 def fireShell(xy, tankx, tanky, turPos, gun_power, xlocation, barrier_width, randomHeight, enemyTankX, enemyTankY):
-    #pygame.mixer.Sound.play(fire_sound)
+    
+   
     fire = True
     damage = 0
-
+    pygame.mixer.Sound.play(shot_sound_mp3)
     startingShell = list(xy)
 
     print("FIRE!", xy)
@@ -345,6 +361,8 @@ def e_fireShell(xy, tankx, tanky, turPos, gun_power, xlocation, barrier_width, r
         fire = True
         startingShell = list(xy)
 
+        
+
         while fire:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -379,6 +397,9 @@ def e_fireShell(xy, tankx, tanky, turPos, gun_power, xlocation, barrier_width, r
                 fire = False
 
     fire = True
+
+    pygame.mixer.Sound.play(shot_sound_mp3)
+
     startingShell = list(xy)
     print("FIRE!", xy)
 
@@ -449,6 +470,8 @@ def power(level):
 def game_intro():
     intro = True
 
+    pygame.mixer.Sound.play(intro_music) #play intro music
+
     while intro:
         for event in pygame.event.get():
             # print(event)
@@ -458,16 +481,19 @@ def game_intro():
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_c:
+                    pygame.mixer.Sound.stop()
                     intro = False
+                    
                 elif event.key == pygame.K_q:
 
                     pygame.quit()
                     quit()
 
         gameDisplay.fill(black)
+
         message_to_screen("Welcome to Tanks!", white, -100, size="large")
-        message_to_screen("The objective is to shoot and destroy", wheat, 15)
-        message_to_screen("the enemy tank before they destroy you.", wheat, 60)
+        message_to_screen("You have one Objective: ", wheat, 15)
+        message_to_screen("Shoot and destroy the enemy!", wheat, 60)
         message_to_screen("The more enemies you destroy, the harder they get.", wheat, 110)
         message_to_screen("Brought To You by :- code-projects.org", wheat, 280)
         # message_to_screen("Press C to play, P to pause or Q to quit",black,180)
@@ -481,10 +507,11 @@ def game_intro():
 
         clock.tick(15)
 
+
 #---------------------------function for game Over screen------------------------------------------------------
 def game_over():
     game_over = True
-
+    pygame.mixer.Sound.play(loose_sound)
     while game_over:
         for event in pygame.event.get():
             # print(event)
@@ -507,7 +534,7 @@ def game_over():
 #---------------------------function for players win screen--------------------------------------------------
 def you_win():
     win = True
-
+    pygame.mixer.Sound.play(win_sound)
     while win:
         for event in pygame.event.get():
             # print(event)
@@ -529,18 +556,34 @@ def you_win():
 
 #---------------------------function for health bars of both tanks---------------------------------------
 def health_bars(player_health, enemy_health):
+    hp = 100
+
     if player_health > 75:
+        text_player = smallfont.render(str(player_health), True, green)
+        gameDisplay.blit(text_player, [560, 20])
         player_health_color = green
+
     elif player_health > 50:
+        text_player = smallfont.render(str(player_health), True, yellow)
+        gameDisplay.blit(text_player, [560, 20])
         player_health_color = yellow
     else:
+        text_player = smallfont.render(str(player_health), True, red)
+        gameDisplay.blit(text_player, [560, 20])
         player_health_color = red
 
     if enemy_health > 75:
+        text = smallfont.render(str(enemy_health), True, green)
+        gameDisplay.blit(text, [display_width / 6, 20])
         enemy_health_color = green
+
     elif enemy_health > 50:
+        text = smallfont.render(str(enemy_health), True, yellow)
+        gameDisplay.blit(text, [display_width / 6, 20])
         enemy_health_color = yellow
     else:
+        text = smallfont.render(str(enemy_health), True, red)
+        gameDisplay.blit(text, [display_width / 6, 20])
         enemy_health_color = red
 
     pygame.draw.rect(gameDisplay, player_health_color, (680, 25, player_health, 25))
