@@ -559,30 +559,30 @@ def health_bars(player_health, enemy_health):
     hp = 100
 
     if player_health > 75:
-        text_player = smallfont.render(str(player_health), True, green)
-        gameDisplay.blit(text_player, [560, 20])
+        text_player_health = smallfont.render(str(player_health )+ " HP", True, green)
+        gameDisplay.blit(text_player_health, [560, 20])
         player_health_color = green
 
     elif player_health > 50:
-        text_player = smallfont.render(str(player_health), True, yellow)
-        gameDisplay.blit(text_player, [560, 20])
+        text_player_health = smallfont.render(str(player_health) + " HP", True, yellow)
+        gameDisplay.blit(text_player_health, [560, 20])
         player_health_color = yellow
     else:
-        text_player = smallfont.render(str(player_health), True, red)
+        text_player = smallfont.render(str(player_health )+ " HP", True, red)
         gameDisplay.blit(text_player, [560, 20])
         player_health_color = red
 
     if enemy_health > 75:
-        text = smallfont.render(str(enemy_health), True, green)
+        text = smallfont.render(str(enemy_health )+ " HP", True, green)
         gameDisplay.blit(text, [display_width / 6, 20])
         enemy_health_color = green
 
     elif enemy_health > 50:
-        text = smallfont.render(str(enemy_health), True, yellow)
+        text = smallfont.render(str(enemy_health )+ " HP", True, yellow)
         gameDisplay.blit(text, [display_width / 6, 20])
         enemy_health_color = yellow
     else:
-        text = smallfont.render(str(enemy_health), True, red)
+        text = smallfont.render(str(enemy_health)+" HP", True, red)
         gameDisplay.blit(text, [display_width / 6, 20])
         enemy_health_color = red
 
